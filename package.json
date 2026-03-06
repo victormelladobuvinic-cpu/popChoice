@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "Scrim-s05qo7r",
   "description": "https://scrimba.com/fullstack-path-c0fullstack/~0453/s0bknrrlfu/head",
   "scripts": {
@@ -9,6 +10,7 @@
   },
   "dependencies": {
     "@langchain/core": "^1.1.31",
+    "@langchain/textsplitters": "^1.0.1",
     "@supabase/supabase-js": "2.38.2",
     "dotenv": "^17.3.1",
     "langchain": "^1.2.30",
