@@ -1,5 +1,9 @@
 import OpenAI from 'openai';
+import 'dotenv/config';
 import { createClient } from "@supabase/supabase-js";
+
+console.log("¿Variables cargadas?:", process.env.OPENAI_API_KEY ? "SÍ" : "NO");
+console.log("Contenido de URL:", process.env.SUPABASE_URL);
 
 /** OpenAI config */
 if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI API key is missing or invalid.");
@@ -14,3 +18,4 @@ if (!privateKey) throw new Error(`Expected env var SUPABASE_API_KEY`);
 const url = process.env.SUPABASE_URL;
 if (!url) throw new Error(`Expected env var SUPABASE_URL`);
 export const supabase = createClient(url, privateKey);
+
