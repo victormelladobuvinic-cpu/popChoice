@@ -1,4 +1,47 @@
 html, body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
+
+body {
+    color: #fff;
+    background: #000C36;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+/* --------------------hero---------------- */
+
+
+/* ---------------form--------------------- */
+
+/* questions */
+.prompt-questions, .question {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    gap: 0.5em;
+    
+    
+}
+
+.question, .letsgo-button {
+    width: 80%;
+}
+
+/* button */
+
+.letsgo-button {
+    margin: 30px auto 0 auto;
+}
+
+/*------------- output view ---------------*/
+
+/* response */
+
+/* button */
+
