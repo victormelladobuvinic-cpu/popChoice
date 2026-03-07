@@ -1,19 +1,19 @@
 import OpenAI from 'openai';
-import 'dotenv/config';
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
+// Vite utiliza import.meta.env en lugar de process.env
+const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
 
-/** OpenAI config */
-if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI API key is missing or invalid.");
+// Verificación simple para saber si las variables cargaron
+if (!openAIKey || !supabaseUrl || !supabaseKey) {
+  console.error("Error: Variables de entorno no encontradas. Revisa tu archivo .env");
+}
+
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
+    apiKey: openAIKey,
+    dangerouslyAllowBrowser: true 
 });
 
-/** Supabase config */
-const privateKey = process.env.SUPABASE_API_KEY;
-if (!privateKey) throw new Error(`Expected env var SUPABASE_API_KEY`);
-const url = process.env.SUPABASE_URL;
-if (!url) throw new Error(`Expected env var SUPABASE_URL`);
-export const supabase = createClient(url, privateKey);
-
+export const supabase = createClient(supabaseUrl, supabaseKey);

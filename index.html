@@ -1,33 +1,39 @@
 <!doctype html>
 <html>
     <head>
+        <!-- google fonts -->
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Carter+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">   
+
+        <!-- meta data -->
         <title>PopChoice</title>
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
         <header class="hero-section">
-            <img src="" alt="" class="logo">
+            <img src="/images/popChoiceLogo.png" alt="a popcorn kawaii logo" class="logo-img">
             <h1 class="app-title">PopChoice</h1>
         </header>
         <form class="prompt-questions">
             
             <div class="question">
                 <label for="question1">What’s your favorite movie and why?</label>
-                <input type="text" id="question1" name="question1" required>
+                <textarea  id="question1" name="question1" required></textarea>  
             </div>
 
             <div class="question">
                 <label for="question2">
                 Are you in the mood for something new or a classic?
                 </label>
-                <input type="text" id="question2" name="question2" required>
+                <textarea  id="question2" name="question2" required></textarea> 
             </div>
 
             <div class="question">
                 <label for="question3">
                 Do you wanna have fun or do you want something serious?
                 </label>
-                <input type="text" id="question3" name="question3" required>
+                <textarea  id="question3" name="question3" required></textarea> 
             </div>
             <button type="submit" class="letsgo-button">Let's Go</button>
         </form>

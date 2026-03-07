@@ -1,67 +1,75 @@
-import { openai, supabase } from './config.js';
-import { CharacterTextSplitter} from "@langchain/textsplitters"
+ import { openai, supabase } from './config.js'; 
 
-import fs from 'fs'; 
+const promptResponse = document.querySelector("form");
+
+promptResponse.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(promptResponse);
+    const data = 
+    ` favorite movie an why: ${formData.get("question1")},
+     mood${formData.get("question2")}, 
+     genre: ${formData.get("question3")}  ` 
+        
+    
+
+    
+    
+    main(data);
+
+    
+});
 
 
+// Bring all function calls together
+async function main(input) {
+  const embedding = await createEmbedding(input);
+  const match = await findNearestMatch(embedding);
+  await getChatCompletion(match, input);
+}
 
+// Create an embedding vector representing the input text
+async function createEmbedding(input) {
+  const embeddingResponse = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: input
+  });
+  return embeddingResponse.data[0].embedding;
+}
 
+// Query Supabase and return a semantically matching text chunk
+async function findNearestMatch(embedding) {
+  const { data } = await supabase.rpc('match_popchoice_data', {
+    query_embedding: embedding,
+    match_threshold: 0.50,
+    match_count: 1
+  });
+  return data[0].content;
+}
 
-/* ---------------------------chunk and embedding pairing--------------------------------- */
+// Use OpenAI to make the response conversational
+const chatMessages = [{
+    role: 'system',
+    content: `You are an movie expert who loves recommending movies to people.
+     You will be given two pieces of information - some context about a movie and a topics to choose a movie.
+      in 150 words or less, your main job is to formulate a short answer to the question "What movie should I see today?".
+       If you are unsure and cannot find the answer in the context, say, "Sorry, I don't know the answer."
+        Please do not make up the answer.` 
+}];
 
-
-/* 1. Función para dividir el documento */
-async function splitDocument(filePath) {
-  // Leemos el archivo del disco
-  const text = fs.readFileSync(filePath, 'utf8');
-
-  const splitter = new CharacterTextSplitter({
-    separator: "\n\n", 
-    chunkSize: 700,
-    chunkOverlap: 0,
+async function getChatCompletion(text, query) {
+  chatMessages.push({
+    role: 'user',
+    content: `Context: ${text} Question: ${query}`
+  });
+  
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: chatMessages,
+    temperature: 0.5,
+    frequency_penalty: 0.5
   });
 
-  const output = await splitter.createDocuments([text]);
-  const moviesArray = output.map(chunk => chunk.pageContent);
-  
-  return moviesArray;
+  console.log(response.choices[0].message.content);
 }
 
-/* 2. Crear embeddings y guardar */
-async function createAndStoreEmbeddings() {
-  try {
-    const chunkData = await splitDocument("movies.txt");
-    console.log(`Cargando ${chunkData.length} películas...`);
-
-    const response = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: chunkData,
-      encoding_format: "float",
-    });
-
-    const pairedData = chunkData.map((text, index) => ({
-      content: text,
-      embedding: response.data[index].embedding
-    }));
-
-    const { data, error } = await supabase
-      .from("popChoiceData") // Asegúrate de que coincida con tu tabla SQL
-      .insert(pairedData);
-
-    if (error) {
-      console.error("Error en Supabase:", error);
-    } else {
-      console.log("¡Éxito! Datos insertados en Supabase.");
-    }
-  } catch (err) {
-    console.error("Error general:", err);
-  }
-}
-
-createAndStoreEmbeddings();
-
-/* ---------------------------array for prompt--------------------------------- */
-
-
-
-/* ---------------------------similarity search--------------------------------- */
